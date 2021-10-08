@@ -19,4 +19,11 @@ router.post('/tokenIsValid', userControllers.tokenIsValid);
 //Gets currently logged in user
 router.get('/', auth, userControllers.getLoggedInUser);
 
+//Gets all users
+router.get('/users', auth, userControllers.getAllUsers);
+
+//Seeds users
+router.get('/seed', userControllers.seedUsers);
+
+
 module.exports = router;

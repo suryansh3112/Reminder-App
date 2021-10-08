@@ -79,7 +79,7 @@ const login = async (req, res) => {
         id: user._id,
         name: user.name,
         email: user.email
-      },
+      }
     });
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -117,8 +117,75 @@ const getLoggedInUser = async (req, res) => {
   }
 };
 
+const seedUsers = async (req, res) => {
+  try {
+    const fn = [
+      'Suryansh',
+      'Rahul',
+      'Sahil',
+      'Liam',
+      'Olivia',
+      'Noah',
+      'Emma',
+      'Oliver',
+      'Ava',
+      'William',
+      'Sophia',
+      'Elijah',
+      'Isabella',
+      'James',
+      'Charlotte'
+    ];
+    const ln = [
+      'Purohit',
+      'Shinde',
+      'Jain',
+      'Anderson',
+      'Ashwoon',
+      'Aikin',
+      'Bateman',
+      'Bongard',
+      'Bowers',
+      'Boyd',
+      'Cannon',
+      'Cast',
+      'Deitz',
+      'Dewalt',
+      'Ebner'
+    ];
+    const salt = await bcrypt.genSalt();
+    const passwordHash = await bcrypt.hash('test123', salt);
+    for (let i = 0; i < fn.length; i++) {
+      const newUser = new User({
+        name: fn[i] + ' ' + ln[i],
+        email: `${fn[i].toLowerCase()}@gmail.com`,
+        password: passwordHash
+      });
+      const savedUser = await newUser.save();
+    }
+
+    res.status(200).json({ message: 'Successfully Seeded' });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+const getAllUsers = async (req, res) => {
+  try {
+    const users = await User.find(
+      { _id: { $ne: req.user } },
+      { name: 1, email: 1 }
+    );
+    res.status(200).json({ data: users });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 //------------------------------------------------EXPORTS-----------------------------------------------------------
 exports.register = register;
 exports.login = login;
 exports.tokenIsValid = tokenIsValid;
 exports.getLoggedInUser = getLoggedInUser;
+exports.seedUsers = seedUsers;
+exports.getAllUsers = getAllUsers;
