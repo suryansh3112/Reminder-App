@@ -1,3 +1,5 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 export const isComplete = (user) => {
   for (let [key, value] of Object.entries(user)) {
     if (!value) return false;
@@ -24,4 +26,22 @@ export const getTime = (date) => {
   minutes = minutes.toString().padStart(2, '0');
   let strTime = hours + ':' + minutes + ' ' + ampm;
   return strTime;
+};
+
+export const localStorage = {
+  getItem: async (key) => {
+    try {
+      const value = await AsyncStorage.getItem(key);
+      return value;
+    } catch (e) {
+      // error reading value
+    }
+  },
+  setItem: async (key, value) => {
+    try {
+      await AsyncStorage.setItem(key, value);
+    } catch (e) {
+      // saving error
+    }
+  },
 };

@@ -94,10 +94,21 @@ const tokenIsValid = async (req, res) => {
 
     const verified = jwt.verify(token, process.env.JWT_SECRET);
     if (!verified) {
-      return res.json(false);
+      return res.json({ status: false });
+    }
+    const user = await User.findById(verified.id);
+    if (user) {
+      res.status(200).json({
+        status: true,
+        user: {
+          id: user._id,
+          name: user.name,
+          email: user.email
+        }
+      });
     }
 
-    return res.json({ status: true });
+    return res.json({ status: false });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

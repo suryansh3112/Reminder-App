@@ -16,6 +16,7 @@ const addEvent = async (req, res) => {
 
     if (!dateTime) dateTime = new Date();
 
+    console.log(dateTime, typeof dateTime);
     const newEvent = new Event({
       eventName,
       description,
@@ -102,6 +103,7 @@ const editEvent = async (req, res) => {
 
 const deleteEvent = async (req, res) => {
   try {
+    console.log('========================\n', req.params.eventId);
     const eventDeleted = await Event.findOneAndDelete({
       id: req.params.eventId,
       host: req.user

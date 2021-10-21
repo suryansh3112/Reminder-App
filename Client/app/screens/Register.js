@@ -4,9 +4,10 @@ import {
   Text,
   View,
   TextInput,
-  TouchableOpacity,
+  TouchableOpacity
 } from 'react-native';
 import { isComplete } from '../utils/utils';
+import Api from '../utils/api';
 
 export default function Register(props) {
   const [user, setUser] = useState({
@@ -14,14 +15,20 @@ export default function Register(props) {
     lastName: '',
     email: '',
     password: '',
-    confirmPassword: '',
+    confirmPassword: ''
   });
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (isComplete(user)) {
-      console.log(user);
+      try {
+        const res = await Api.register(user);
+        alert(res?.data?.message);
+        props.navigation.navigate('Login');
+      } catch (error) {
+        alert(error?.response?.data?.message);
+      }
     } else {
-      console.log('Incomplete');
+      alert('Please fill all the details');
     }
   };
 
@@ -40,7 +47,7 @@ export default function Register(props) {
           });
         }}
         value={user.firstName}
-        placeholder='First Name'
+        placeholder="First Name"
       />
       <TextInput
         style={styles.input}
@@ -50,7 +57,7 @@ export default function Register(props) {
           });
         }}
         value={user.lastName}
-        placeholder='Last Name'
+        placeholder="Last Name"
       />
       <TextInput
         style={styles.input}
@@ -60,7 +67,7 @@ export default function Register(props) {
           });
         }}
         value={user.email}
-        placeholder='Email'
+        placeholder="Email"
       />
 
       <TextInput
@@ -72,7 +79,7 @@ export default function Register(props) {
           })
         }
         value={user.password}
-        placeholder='Password'
+        placeholder="Password"
       />
       <TextInput
         style={styles.input}
@@ -83,7 +90,7 @@ export default function Register(props) {
           })
         }
         value={user.confirmPassword}
-        placeholder='Confirm Password'
+        placeholder="Confirm Password"
       />
 
       <TouchableOpacity style={styles.button} onPress={handleSubmit}>
@@ -104,12 +111,12 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'center'
   },
   header: {
     fontSize: 20,
     fontWeight: 'bold',
-    marginBottom: 20,
+    marginBottom: 20
   },
   input: {
     borderWidth: 1,
@@ -118,7 +125,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     paddingVertical: 5,
     paddingHorizontal: 10,
-    width: '70%',
+    width: '70%'
   },
   button: {
     backgroundColor: '#F0A500',
@@ -126,17 +133,17 @@ const styles = StyleSheet.create({
     borderRadius: 25,
     width: '70%',
     alignItems: 'center',
-    marginBottom: 10,
+    marginBottom: 10
   },
   buttonText: {
     color: '#fff',
     fontWeight: 'bold',
-    fontSize: 15,
+    fontSize: 15
   },
   logPrefix: {
-    color: '#6f6f6f',
+    color: '#6f6f6f'
   },
   logText: {
-    color: '#3770ff',
-  },
+    color: '#3770ff'
+  }
 });

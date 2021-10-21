@@ -1,24 +1,37 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import {
   StyleSheet,
   Text,
   View,
   TextInput,
-  TouchableOpacity,
+  TouchableOpacity
 } from 'react-native';
-import { isComplete } from '../utils/utils';
+import { isComplete, localStorage } from '../utils/utils';
+import Api from '../utils/api';
+import UserContext from '../context/UserContext';
 
 export default function Login(props) {
+  const { setUserData } = useContext(UserContext);
+
   const [user, setUser] = useState({
     email: '',
-    password: '',
+    password: ''
   });
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (isComplete(user)) {
-      console.log(user);
+      try {
+        const loginRes = await Api.login(user);
+        setUserData({
+          token: loginRes?.data?.token,
+          user: loginRes?.data?.user
+        });
+        localStorage.setItem('auth-token', loginRes.data.token);
+      } catch (error) {
+        alert(error?.response?.data?.message);
+      }
     } else {
-      console.log('Incomplete');
+      alert('Please fill all the details');
     }
   };
 
@@ -37,7 +50,7 @@ export default function Login(props) {
           });
         }}
         value={user.email}
-        placeholder='Email'
+        placeholder="Email"
       />
 
       <TextInput
@@ -49,7 +62,7 @@ export default function Login(props) {
           })
         }
         value={user.password}
-        placeholder='Password'
+        placeholder="Password"
       />
 
       <TouchableOpacity style={styles.loginBtn} onPress={handleSubmit}>
@@ -70,12 +83,12 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'center'
   },
   header: {
     fontSize: 20,
     fontWeight: 'bold',
-    marginBottom: 20,
+    marginBottom: 20
   },
   input: {
     borderWidth: 1,
@@ -84,7 +97,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     paddingVertical: 5,
     paddingHorizontal: 10,
-    width: '70%',
+    width: '70%'
   },
   loginBtn: {
     backgroundColor: '#3770ff',
@@ -92,17 +105,17 @@ const styles = StyleSheet.create({
     borderRadius: 25,
     width: '70%',
     alignItems: 'center',
-    marginBottom: 10,
+    marginBottom: 10
   },
   loginText: {
     color: '#fff',
     fontWeight: 'bold',
-    fontSize: 15,
+    fontSize: 15
   },
   regPrefix: {
-    color: '#6f6f6f',
+    color: '#6f6f6f'
   },
   regText: {
-    color: '#3770ff',
-  },
+    color: '#3770ff'
+  }
 });

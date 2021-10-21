@@ -1,14 +1,19 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { StyleSheet, Text, View, Linking, ScrollView } from 'react-native';
 import { AntDesign, MaterialIcons, Feather } from '@expo/vector-icons';
 import { getTime, getDay } from '../utils/utils';
 import GuestBlock from '../components/GuestBlock';
 import Header from '../components/Header';
+import UserContext from '../context/UserContext';
+import { localStorage } from '../utils/utils';
+import Api from '../utils/api';
 
 export default function EventDetailsScreen(props) {
   const ICON_SIZE = 26;
   const { navigation } = props;
   const { eventDetails } = props.route.params || {};
+  const { userData, setUserData } = useContext(UserContext);
+  console.log(userData.user);
 
   const handleLinkPress = (link) => {
     Linking.openURL(link).catch((err) => {
@@ -16,10 +21,30 @@ export default function EventDetailsScreen(props) {
     });
   };
 
-  const handleDelete = () => {};
+  const isHost = () => {
+    return eventDetails?.host?._id === userData?.user?.id;
+  };
+
+  const handleDelete = async () => {
+    if (isHost()) {
+      try {
+        const res = await Api.deleteEvent(eventDetails?._id, userData.token);
+        alert(res.data.message);
+        handleClose();
+      } catch (error) {
+        alert(error?.message);
+      }
+    } else {
+      alert('Only host can Delete Event');
+    }
+  };
 
   const handleEdit = () => {
-    navigation.push('EditEventScreen', { currentEventDetails: eventDetails });
+    if (isHost()) {
+      navigation.push('EditEventScreen', { currentEventDetails: eventDetails });
+    } else {
+      alert('Only host can Edit Event');
+    }
   };
 
   const handleClose = () => {
@@ -38,9 +63,9 @@ export default function EventDetailsScreen(props) {
         <View style={styles.flexRow}>
           <MaterialIcons
             style={styles.icon}
-            name='event'
+            name="event"
             size={ICON_SIZE}
-            color='black'
+            color="black"
           />
           <Text style={[styles.text, { flex: 1 }]}>
             {eventDetails.eventName}
@@ -48,25 +73,25 @@ export default function EventDetailsScreen(props) {
 
           <Feather
             style={[styles.icon]}
-            name='edit'
+            name="edit"
             size={ICON_SIZE}
-            color='#35beff'
+            color="#35beff"
             onPress={handleEdit}
           />
           <MaterialIcons
             style={styles.icon}
-            name='delete'
+            name="delete"
             size={ICON_SIZE}
-            color='#E02401'
+            color="#E02401"
             onPress={handleDelete}
           />
         </View>
         <View style={styles.flexRow}>
           <MaterialIcons
             style={styles.icon}
-            name='access-time'
+            name="access-time"
             size={ICON_SIZE}
-            color='black'
+            color="black"
           />
           <View>
             <Text style={styles.dateText}>{getDay(eventDetails.dateTime)}</Text>
@@ -80,9 +105,9 @@ export default function EventDetailsScreen(props) {
         <View style={styles.flexRow}>
           <AntDesign
             style={styles.icon}
-            name='link'
+            name="link"
             size={ICON_SIZE}
-            color='black'
+            color="black"
           />
           <Text
             numberOfLines={1}
@@ -103,9 +128,9 @@ export default function EventDetailsScreen(props) {
           <View style={styles.flexRow}>
             <MaterialIcons
               style={styles.icon}
-              name='description'
+              name="description"
               size={ICON_SIZE}
-              color='black'
+              color="black"
             />
             <Text style={styles.text}>{eventDetails.description}</Text>
           </View>
@@ -119,37 +144,37 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-    paddingTop: 50,
+    paddingTop: 50
   },
   scrollView: {
-    paddingVertical: 10,
+    paddingVertical: 10
   },
   header: {
     fontSize: 20,
     fontWeight: 'bold',
     textAlign: 'center',
-    marginBottom: 10,
+    marginBottom: 10
   },
   icon: {
-    marginRight: 10,
+    marginRight: 10
   },
   dateText: {
     fontWeight: 'bold',
     fontSize: 15,
-    marginVertical: 2,
+    marginVertical: 2
   },
   text: {
     fontWeight: 'bold',
-    fontSize: 15,
+    fontSize: 15
   },
   link: {
-    color: '#0645AD',
+    color: '#0645AD'
   },
   flexRow: {
     flexDirection: 'row',
     padding: 16,
     alignItems: 'center',
     borderBottomWidth: 1,
-    borderColor: '#efefef',
-  },
+    borderColor: '#efefef'
+  }
 });
