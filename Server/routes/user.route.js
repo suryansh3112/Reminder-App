@@ -25,5 +25,7 @@ router.get('/users', auth, userControllers.getAllUsers);
 //Seeds users
 router.get('/seed', userControllers.seedUsers);
 
+//Seeds users
+router.get('/getUserInfoArr', userControllers.getUserInfoArr);
 
 module.exports = router;

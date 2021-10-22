@@ -22,7 +22,15 @@ export default function EventDetailsScreen(props) {
   const [users, setUsers] = useState([]);
 
   useEffect(() => {
-    setUsers(fetchData.data);
+    const fetchUsersData = async () => {
+      try {
+        const res = await Api.getAllUsers(userData.token);
+        setUsers(res?.data?.data || []);
+      } catch (error) {
+        alert(error?.response?.data?.message);
+      }
+    };
+    fetchUsersData();
   }, []);
 
   const handleChange = (text, name) => {
@@ -200,78 +208,3 @@ const styles = StyleSheet.create({
     marginHorizontal: 10
   }
 });
-
-const fetchData = {
-  data: [
-    {
-      _id: '61605b42ee30c1e7c85318a7',
-      name: 'Rahul Shinde',
-      email: 'rahul@gmail.com'
-    },
-    {
-      _id: '61605b43ee30c1e7c85318a9',
-      name: 'Sahil Jain',
-      email: 'sahil@gmail.com'
-    },
-    {
-      _id: '61605b43ee30c1e7c85318ab',
-      name: 'Liam Anderson',
-      email: 'liam@gmail.com'
-    },
-    {
-      _id: '61605b43ee30c1e7c85318ad',
-      name: 'Olivia Ashwoon',
-      email: 'olivia@gmail.com'
-    },
-    {
-      _id: '61605b43ee30c1e7c85318af',
-      name: 'Noah Aikin',
-      email: 'noah@gmail.com'
-    },
-    {
-      _id: '61605b43ee30c1e7c85318b1',
-      name: 'Emma Bateman',
-      email: 'emma@gmail.com'
-    },
-    {
-      _id: '61605b43ee30c1e7c85318b3',
-      name: 'Oliver Bongard',
-      email: 'oliver@gmail.com'
-    },
-    {
-      _id: '61605b43ee30c1e7c85318b5',
-      name: 'Ava Bowers',
-      email: 'ava@gmail.com'
-    },
-    {
-      _id: '61605b43ee30c1e7c85318b7',
-      name: 'William Boyd',
-      email: 'william@gmail.com'
-    },
-    {
-      _id: '61605b43ee30c1e7c85318b9',
-      name: 'Sophia Cannon',
-      email: 'sophia@gmail.com'
-    },
-    {
-      _id: '61605b43ee30c1e7c85318bb',
-      name: 'Elijah Cast',
-      email: 'elijah@gmail.com'
-    },
-    {
-      _id: '61605b43ee30c1e7c85318bd',
-      name: 'Isabella Deitz',
-      email: 'isabella@gmail.com'
-    },
-    {
-      _id: '61605b43ee30c1e7c85318bf',
-      name: 'James Dewalt',
-      email: 'james@gmail.com'
-    },
-    {
-      _id: '61605b43ee30c1e7c85318c1',
-      name: 'Charlotte Ebner',
-      email: 'charlotte@gmail.com'
-    }
-  ]
-};

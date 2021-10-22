@@ -193,6 +193,21 @@ const getAllUsers = async (req, res) => {
   }
 };
 
+const getUserInfoArr = async (req, res) => {
+  try {
+    // console.log(req.body.participants);
+    const users = req.body.participants.map(async (userId) => {
+      const user = await User.findById(userId);
+      console.log(user.name);
+      if (user) return user.name;
+      else return 'Not found';
+    });
+    res.status(200).json({ data: users });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 //------------------------------------------------EXPORTS-----------------------------------------------------------
 exports.register = register;
 exports.login = login;
@@ -200,3 +215,4 @@ exports.tokenIsValid = tokenIsValid;
 exports.getLoggedInUser = getLoggedInUser;
 exports.seedUsers = seedUsers;
 exports.getAllUsers = getAllUsers;
+exports.getUserInfoArr = getUserInfoArr;

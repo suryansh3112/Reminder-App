@@ -30,7 +30,7 @@ export default function EventScreen(props) {
     <View style={styles.container}>
       <StatusBar style="auto" />
 
-      <Text style={styles.header}>Welcome Suryansh </Text>
+      <Text style={styles.header}>Welcome {userData?.user?.name} </Text>
       {events?.length > 0 ? (
         <View>
           {events.map((event, idx) => {
@@ -65,7 +65,8 @@ const styles = StyleSheet.create({
   text: {
     fontSize: 15,
     fontWeight: '700',
-    color: '#6f6f6f'
+    color: '#6f6f6f',
+    textAlign: 'center'
   }
 });
 
